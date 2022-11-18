@@ -1,8 +1,8 @@
-from Text_Handler import Text_Handler
+import Word2Vec
 
 text = input()
-TH = Text_Handler(text)
-TH.write()
+Neuronet = Word2Vec.Neuro(text)
+Neuronet.ML()
 
 
 
