@@ -3,8 +3,8 @@ import telebot
 from telebot import types
 import os
 
-badwordfile = open("badwords").readlines()
-bot = telebot.TeleBot('5752360265:AAGynQkWK2msj2CTMK3WU0_D0YxRp07bWPw')
+badwordfile = open("badwords", encoding="utf-8").read().splitlines()
+bot = telebot.TeleBot('')
 lemm_message = []
 bad_words = []
 koeffter = 0
@@ -13,11 +13,12 @@ Neuronet.ML()
 
 def cnt(msg):
     count = 0
+    msg = list(set(msg))
     for i in msg:
         try:
-            if Neuronet.ret_similarity(i)[0] in badwordfile:
-                bad_words.append(i[0])
-                count += 1
+            if Neuronet.ret_similarity(i)[0] in badwordfile or i in badwordfile:
+                bad_words.append(i)
+                count += 10
         except:
             count += 0.5
     return count
@@ -69,7 +70,8 @@ def func(message):
         bot.send_message(message.chat.id, text="В тексте были найдены такие слова как:\n")
         for word in bad_words:
             bot.send_message(message.chat.id, text=word)
-        bot.send_message(message.chat.id, text="Процент угрозы или возможности противоправных действий по моему алгоритму таков:\n")
+        bot.send_message(message.chat.id, text="Процент угрозы или возможности противоправных действий по моему алгоритму таков:\n"
+                                               + str(round(koeffter)) + "%")
         if koeffter >= 75:
             bot.send_message(message.chat.id, text="Сообщение имеет максимальный уровень угрозы. Надеемся, что мы смогли вам помочь и вы сможете быстро отреагировать на опасность.\n"
                                                    "Продолжите отправлять сообщения или напишите 'Главное меню'")
@@ -83,5 +85,6 @@ def func(message):
             bot.send_message(message.chat.id, text="Сообщение имеет безопасный уровень угрозы. Надеемся, что мы смогли вам помочь и вы сможете быстро отреагировать на опасность.\n"
                                                    "Продолжите отправлять сообщения или напишите 'Главное меню'")
         koeffter = 0
+        bad_word = []
 
 bot.polling(none_stop=True)
